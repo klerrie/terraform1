@@ -1,0 +1,53 @@
+stages:
+  - stage: validate
+    jobs:
+      - job: validate
+        continueOnError: false
+        steps:
+        - task: TerraformInstaller@0
+          inputs:
+            terraformVersion: 'latest'
+        - task: TerraformTaskV2@2
+          displayName: 'init'
+          inputs:
+            provider: 'azurerm'
+            command: 'init'
+            backendServiceArm: 'MyARMdeploymentconnection'
+        - task: TerraformTaskV2@2
+          displayName: 'validate'
+          inputs:
+            provider: 'azurerm'
+            command: 'validate'            
+- stage: deploy
+  jobs:
+  - deployment: deploy_terraform
+    continueOnError: false
+    environment: 'dev'
+    strategy:
+     runOnce:
+       deploy:
+        steps:
+          -checkout: self
+          - task: TerraformInstaller@0
+            displayName: 'ínstall'
+            inputs:
+              terraformVersion: 'latest'
+          - task: TerraformTaskV2@2
+            inputs:
+              provider: 'azurerm'
+              command: 'init'
+              backendServiceArm: 'MyARMdeploymentconnection'
+          - task: TerraformTaskV2@2
+            displayName:'plan'
+            inputs:
+              provider: 'azurerm'
+              command: 'plan'
+              environmentServiceNameAzureRM: 'MyARMdeploymentconnection'
+              - task: TerraformTaskV2@2
+                displayName:'apply'
+                inputs:
+                  provider: 'azurerm'
+                  command: 'apply'
+                  environmentServiceNameAzureRM: 'MyARMdeploymentconnection'
+
+
