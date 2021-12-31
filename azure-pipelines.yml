@@ -1,23 +1,23 @@
 stages:
-  - stage: validate
-    jobs:
-      - job: validate
-        continueOnError: false
-        steps:
-        - task: TerraformInstaller@0
-          inputs:
-            terraformVersion: 'latest'
-        - task: TerraformTaskV2@2
-          displayName: 'init'
-          inputs:
-            provider: 'azurerm'
-            command: 'init'
-            backendServiceArm: 'MyARMdeploymentconnection'
-        - task: TerraformTaskV2@2
-          displayName: 'validate'
-          inputs:
-            provider: 'azurerm'
-            command: 'validate'            
+- stage: validate
+  jobs:
+  - job: validate
+    continueOnError: false
+    steps:
+    - task: TerraformInstaller@0
+      inputs:
+        terraformVersion: 'latest'
+    - task: TerraformTaskV2@2
+      displayName: 'init'
+      inputs:
+        provider: 'azurerm'
+        command: 'init'
+        backendServiceArm: 'MyARMdeploymentconnection'
+    - task: TerraformTaskV2@2
+      displayName: 'validate'
+      inputs:
+        provider: 'azurerm'
+        command: 'validate'       
 - stage: deploy
   jobs:
   - deployment: deploy_terraform
@@ -27,27 +27,28 @@ stages:
      runOnce:
        deploy:
         steps:
-          -checkout: self
+          - checkout: self
           - task: TerraformInstaller@0
             displayName: 'ínstall'
             inputs:
               terraformVersion: 'latest'
           - task: TerraformTaskV2@2
+            displayName: 'ínit'
             inputs:
               provider: 'azurerm'
               command: 'init'
               backendServiceArm: 'MyARMdeploymentconnection'
           - task: TerraformTaskV2@2
-            displayName:'plan'
+            displayName: 'plan'
             inputs:
               provider: 'azurerm'
               command: 'plan'
               environmentServiceNameAzureRM: 'MyARMdeploymentconnection'
-              - task: TerraformTaskV2@2
-                displayName:'apply'
-                inputs:
-                  provider: 'azurerm'
-                  command: 'apply'
-                  environmentServiceNameAzureRM: 'MyARMdeploymentconnection'
+          - task: TerraformTaskV2@2
+            displayName: 'apply'
+            inputs:
+              provider: 'azurerm'
+              command: 'apply'
+              environmentServiceNameAzureRM: 'MyARMdeploymentconnection'
 
 
