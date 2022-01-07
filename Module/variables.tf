@@ -21,3 +21,11 @@ variable "subnet_name" {
 variable "subnet_prefix" {
     default = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
 }
+
+variable "storage_acc_name"{
+  default = ["terraformstate345"]
+}
+
+variable "container"{
+  default = ["blob1"]
+}  

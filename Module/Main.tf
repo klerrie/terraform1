@@ -1,3 +1,11 @@
+terraform {
+    backend "azurerm"{
+    storage_account_name = "${var.storage_acc_name}"
+    container_name = "${var.container}"
+    key = "networkresource.terraform.tfstate"
+  }
+}
+
 
 resource "azurerm_resource_group" "RG-One" {
   name     = "${var.resource_group_name}"
